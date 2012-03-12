@@ -27,7 +27,12 @@ $.widget( "ui.addresspicker", {
 		  map: false,
 		  lat: false,
 		  lng: false,
+          street_number: false,
+          route: false,
+		  sublocality: false,
 		  locality: false,
+		  state: false,
+		  postal_code: false,
 		  country: false
 		},
 	  draggableMarker: true
@@ -65,7 +70,12 @@ $.widget( "ui.addresspicker", {
 		
 		this.lat      = $(this.options.elements.lat);
 		this.lng      = $(this.options.elements.lng);
+		this.street_number = $(this.options.elements.street_number);
+		this.route = $(this.options.elements.route);
+		this.sublocality = $(this.options.elements.sublocality);
 		this.locality = $(this.options.elements.locality);
+		this.state = $(this.options.elements.state);
+		this.postal_code = $(this.options.elements.postal_code);
 		this.country  = $(this.options.elements.country);
 		if (this.options.elements.map) {
 		  this.mapElement = $(this.options.elements.map);
@@ -116,6 +126,7 @@ $.widget( "ui.addresspicker", {
   _findInfo: function(result, type) {
     for (var i = 0; i < result.address_components.length; i++) {
       var component = result.address_components[i];
+      console.log(component.types);
       if (component.types.indexOf(type) !=-1) {
         return component.long_name;
       }
@@ -137,8 +148,23 @@ $.widget( "ui.addresspicker", {
     }
     this._updatePosition(address.geometry.location);
     
+    if (this.street_number) {
+      this.street_number.val(this._findInfo(address, 'street_number'));
+    }
+    if (this.route) {
+      this.route.val(this._findInfo(address, 'route'));
+    }
+    if (this.sublocality) {
+      this.sublocality.val(this._findInfo(address, 'sublocality'));
+    }
     if (this.locality) {
       this.locality.val(this._findInfo(address, 'locality'));
+    }
+    if (this.state) {
+      this.state.val(this._findInfo(address, 'administrative_area_level_1'));
+    }
+    if (this.postal_code) {
+      this.postal_code.val(this._findInfo(address, 'postal_code'));
     }
     if (this.country) {
       this.country.val(this._findInfo(address, 'country'));
